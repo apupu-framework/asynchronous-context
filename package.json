@@ -1,0 +1,16 @@
+{
+  "name": "async-context",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "prevent-undefined": "^3.0.1",
+    "runtime-typesafety": "^3.0.0",
+    "vanilla-schema-validator": "^3.0.1"
+  }
+}
