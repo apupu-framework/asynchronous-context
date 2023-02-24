@@ -1,4 +1,4 @@
-const { AsyncContext } =  require( 'async-context/context' );
+const { AsyncContext } =  require( 'asynchronous-context/context' );
 
 function createJestTester( jestTest, createContext, options ) {
   if ( ! createContext ) {
@@ -24,10 +24,10 @@ function createJestTester( jestTest, createContext, options ) {
         /*
          * (Thu, 27 Oct 2022 20:27:49 +0900)
          * Convert the thrown object as Error; Jest does not recognize other
-         * thrown objects as error than Error() instances. 
+         * thrown objects as error than Error() instances.
          */
         throw e2;
-        
+
       }
       // >>> COMMENTED OUT (Thu, 27 Oct 2022 11:48:15 +0900)
       // const connection = Context.create( msg, options );
@@ -49,14 +49,14 @@ module.exports.createJestTester = createJestTester;
 
 
 function extendExpect(jestExpect) {
-  const { AsyncContextResult } = require('async-context/result');
+  const { AsyncContextResult } = require('asynchronous-context/result');
   jestExpect.extend({
     toCorrectlyThrow( received, expectedValue ) {
       let thrownValue = null;
       try {
         received()
       } catch (e){
-        thrownValue = e; 
+        thrownValue = e;
       }
       if ( thrownValue === null ) {
         return {

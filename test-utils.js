@@ -1,4 +1,4 @@
-const { AsyncContext } =  require( 'async-context/context' );
+const { AsyncContext } =  require( 'asynchronous-context/context' );
 
 function createTest( originalTest, createContext, options ) {
   if ( ! createContext ) {

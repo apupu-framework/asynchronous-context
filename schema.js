@@ -1,5 +1,5 @@
 
-const symbol = Symbol.for('async-context');
+const symbol = Symbol.for('asynchronous-context');
 
 function init( schema ) {
   if ( symbol in schema ) {
@@ -16,7 +16,7 @@ function init( schema ) {
       showReport               : boolean(),
       suppressSuccessfulReport : boolean(),
       coloredReport            : boolean(),
-      reportMethod             : or( 
+      reportMethod             : or(
                                    equals( << 'console' >> ),
                                    equals( << 'stderr' >> ),
                                    equals( << 'stdout' >> ),

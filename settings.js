@@ -10,12 +10,12 @@ module.exports.settingFile = settingFile;
 
 function parseData( data, validator ) {
   const json = JSON.parse( data );
-  console.log( '[async-context] setting-file.json ',  util.inspect( json ,{colors:true}) );
+  console.log( '[asynchronous-context] setting-file.json ',  util.inspect( json ,{colors:true}) );
   return preventUndefined( json, validator );
 }
 
 function logging() {
-  console.log( '[async-context] reading setting file' );
+  console.log( '[asynchronous-context] reading setting file' );
   console.log( '                path : ', settingFile );
   console.log( '               ', new Error().stack.split('\n')[3].trim() );
 }

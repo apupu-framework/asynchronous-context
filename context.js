@@ -95,13 +95,13 @@ class AsyncContext {
 
   /**
    * executeSafely()
-   * --------------------------------------------------------------------------------  
-   * wrap the specified function by async-context safe execution block
+   * --------------------------------------------------------------------------------
+   * wrap the specified function by asynchronous-context safe execution block
    */
 
   /*
    * About `this.event_handlers`
-   * -------------------------------------------------------------------------------- 
+   * --------------------------------------------------------------------------------
    *
    * This `this` points to `AsyncContext` class.
    *
@@ -165,8 +165,8 @@ class AsyncContext {
       arrayOfArgs = enp( 'arrayOfArgs' ),
     } = nargs;
 
-    // >>> MODIFIED (Fri, 30 Dec 2022 18:46:41 +0900) 
-    // Note that this modification was not tested. 
+    // >>> MODIFIED (Fri, 30 Dec 2022 18:46:41 +0900)
+    // Note that this modification was not tested.
     // This is not frequently used.
     let totalResult = await arrayOfArgs.reduce( async (promise,args)=>{
       // require('beep').beep({length:0.025});
@@ -210,13 +210,13 @@ class AsyncContext {
   }
 
 
-  /** 
+  /**
    * When autocommit mode is enabled, `executeTransaction` will automatically
    * execute commit statement unless the function that is specified in `fn`
    * parameter failed. `executeTransaction()` function considers `fn` is failed
    * when :
    *
-   *   - the `status` field of its return value is other than MSG_SUCCEEDED 
+   *   - the `status` field of its return value is other than MSG_SUCCEEDED
    *   - it throws an error object
    *   - (deprecated in Jul 17 2022) there is any error in the log list after its execution
    *
@@ -286,7 +286,7 @@ function create(...args) {
   // throw new Error('calling create() is prohibited');
 
   // A static dynamic function; which you can't perform on JAVA.
-  // BUMMER! ABOVE IS NOT TRUE!  // (Thu, 05 Jan 2023 19:09:00 +0900) 
+  // BUMMER! ABOVE IS NOT TRUE!  // (Thu, 05 Jan 2023 19:09:00 +0900)
   // throw new Error('calling this method is prohibited');
   return new this(...args);
 }
