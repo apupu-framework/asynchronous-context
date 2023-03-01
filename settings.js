@@ -7,17 +7,25 @@ const util = require('util');
 const settingFile = path.join( process.cwd(),  '.settings.json' );
 module.exports.settingFile = settingFile;
 
+// TODO THIS SHOULD BE CONFIGURABLE
+// (Wed, 01 Mar 2023 15:31:35 +0900)
+const DEBUG = false;
+
 
 function parseData( data, validator ) {
   const json = JSON.parse( data );
-  console.log( '[asynchronous-context] setting-file.json ',  util.inspect( json ,{colors:true}) );
+  if ( DEBUG ) {
+    console.log( '[asynchronous-context] setting-file.json ',  util.inspect( json ,{colors:true}) );
+  }
   return preventUndefined( json, validator );
 }
 
 function logging() {
-  console.log( '[asynchronous-context] reading setting file' );
-  console.log( '                path : ', settingFile );
-  console.log( '               ', new Error().stack.split('\n')[3].trim() );
+  if ( DEBUG ) {
+    console.log( '[asynchronous-context] reading setting file' );
+    console.log( '                path : ', settingFile );
+    console.log( '               ', new Error().stack.split('\n')[3].trim() );
+  }
 }
 
 function readSettings( validator ) {
