@@ -5,10 +5,13 @@ function createTest( originalTest, createContext, options ) {
     throw new ReferenceError( '`createContext` must be specified' );
   }
   function testex(...args){
-    const msg = args[0];
-    const fn  = args[1];
+    const first = 0;
+    const last = args.length-1;
 
-    args[1] = async (...args2 )=>{
+    const msg =  args.length < 2 ? 'default test' : args[first];
+    const fn  = args[last];
+
+    args[last] = async (...args2 )=>{
       try {
         return await (
           createContext( msg )
