@@ -111,6 +111,15 @@ const MSG_TRACE_TRACE          = 'trace';
 const MSG_TRACE_END            = 'leave';
 const MSG_TRACE_END_WITH_ERROR = 'trace-end-with-error';
 
+function formatArgs1( ...args ) {
+  return args.length == 1 ? args.pop() : args.map(e=>e!=null?unprevent(e).toString():'(null)').join(' ');
+}
+function formatArgs2( ...args ) {
+  return [...args];
+}
+
+const formatArgs = formatArgs2;
+
 class AsyncContextLogger {
   constructor( name, options ) {
     this.name = name;
@@ -127,28 +136,28 @@ class AsyncContextLogger {
   error(...args) {
     this.logList.push({
       type   : MSG_ERROR,
-      value  : args.length == 1 ? args.pop() : args.map(e=>e!=null?unprevent(e).toString():'(null)').join(' '),
+      value  : formatArgs(...args),
     });
   }
 
   warn(...args) {
     this.logList.push({
       type : MSG_WARNING,
-      value  : args.length == 1 ? args.pop() : args.map(e=>e!=null?unprevent(e).toString():'(null)').join(' '),
+      value  : formatArgs(...args),
     });
   }
 
   log(...args) {
     this.logList.push({
       type   : MSG_LOG,
-      value  : args.length == 1 ? args.pop() : args.map(e=>e!=null?unprevent(e).toString():'(null)').join(' '),
+      value  : formatArgs(...args),
     });
   }
 
   trace(...args) {
     this.logList.push({
       type   : MSG_TRACE_TRACE,
-      value  : args.length == 1 ? args.pop() : args.map(e=>e!=null?unprevent(e).toString():'(null)').join(' '),
+      value  : formatArgs(...args),
     });
   }
 
