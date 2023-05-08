@@ -7,8 +7,8 @@ const { AsyncContextLogger } = require( './logger.js' );
 require( './schema' ).init( schema );
 
 const MSG_ERROR_VALUE           = '__errorValue__';
-const MSG_INPUT_ERROR           = 'input-error';
-const MSG_OUTPUT_ERROR          = 'output-error';
+const MSG_INPUT_ERROR           = 'leave-with-input-object-validation-failure';
+const MSG_OUTPUT_ERROR          = 'leave-with-output-object-validation-failure';
 
 function filter_ansi(m) {
   return m.replace( /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '' );
@@ -137,18 +137,34 @@ class AsyncContext {
       this.logger.leave_with_error( nargs.fn_name, this.__options.filterError( nargs.error ) );
     },
     on_input_error(nargs) {
-      this.logger.output({
-        type  : MSG_INPUT_ERROR,
-        name  : nargs.fn_name,
-        value : nargs.message,
-      });
+      // if ( 'trace_validator_result' in nargs ) {
+      //   this.logger.output({
+      //     type  : MSG_INPUT_ERROR,
+      //     name  : nargs.fn_name,
+      //     value : nargs.trace_validator_result.report(),
+      //   });
+      // } else {
+      //   this.logger.output({
+      //     type  : MSG_INPUT_ERROR,
+      //     name  : nargs.fn_name,
+      //     value : nargs.message,
+      //   });
+      // }
     },
     on_output_error(nargs) {
-      this.logger.output({
-        type  : MSG_OUTPUT_ERROR,
-        name  : nargs.fn_name,
-        value : nargs.message,
-      });
+      // if ( 'trace_validator_result' in nargs ) {
+      //   this.logger.output({
+      //     type  : MSG_OUTPUT_ERROR,
+      //     name  : nargs.fn_name,
+      //     value : nargs.trace_validator_result.report(),
+      //   });
+      // } else {
+      //   this.logger.output({
+      //     type  : MSG_OUTPUT_ERROR,
+      //     name  : nargs.fn_name,
+      //     value : nargs.message,
+      //   });
+      // }
     },
   };
 
