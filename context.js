@@ -208,7 +208,7 @@ class AsyncContext {
       // Search Tag : TAG_MANUAL_ROLLBACK
       // Manually Rollback the current transaction.
       // =========================================
-      // (await rollbackTransaction( connection ));
+      // (await rollback_transaction( connection ));
 
       // (Fri, 30 Dec 2022 18:54:08 +0900)
       // `value.reason` is very suspicious; it does not exist in AsyncContextResult()
