@@ -86,7 +86,7 @@ class AsyncContextResult {
 
   static isResult (o) {
     return (
-      ( o != null ) && 
+      ( o != null ) &&
       ( typeof o === 'object' ) &&
       ( '____IS_ASYNC_CONTEXT_RESULT____' in o )
     );
@@ -108,7 +108,7 @@ class AsyncContextResult {
     // unprevent; it is suffice to prevent-undefined at the root of the object tree.  (Sat, 22 Oct 2022 19:17:04 +0900)
     value = unprevent( e );
     // this function moves the messageObject to message.
-    value = filterErrorToJSON(value); 
+    value = filterErrorToJSON(value);
     // if the error object ( that is, messageObject ) has value field, use it as the value.
     value = replaceMessageToValue(value);
     // append additional message
@@ -130,7 +130,7 @@ module.exports.AsyncContextResult = AsyncContextResult;
 function replaceMessageToValue(e) {
   return (
     true
-    && ( typeof e         === 'object' ) 
+    && ( typeof e         === 'object' )
     && ( 'message' in e )
     && ( typeof e.message === 'object' )
     && ( 'value' in e.message )
@@ -164,31 +164,37 @@ function getStackFromError(o) {
 }
 
 function filterErrorToJSON( input ) {
-  const output =  __filterErrorToJSON( input );
+  const output =  __filterErrorToJSON( input, 0 );
   // console.log( 'filterErrorToJSON - Object.keys( input )', Object.keys( input ) );
   // console.log( 'filterErrorToJSON', 'input', input , 'output', output );
   return output;
 }
 
-function __filterErrorToJSON(o) {
+const inspect_custom_symbol = Symbol.for('nodejs.util.inspect.custom');
+const { inspect } = require( 'node:util' );
+
+
+function __filterErrorToJSON(o, depth ) {
   if ( o instanceof Error ) {
     const REPLACING_PROPERTIES = ['message', 'stack', 'cause'];
-    return Object.assign( 
-      {}, 
-      { message : ((typeof o === 'object') && ('messageObject' in o ) ) ? __filterErrorToJSON( o.messageObject ) : o.message },
+    return Object.assign(
+      {},
+      { message : ((typeof o === 'object') && ('messageObject' in o ) ) ? __filterErrorToJSON( o.messageObject, depth+1 ) : o.message },
       { stack   : getStackFromError( o ) },
-      { cause   : __filterErrorToJSON( o.cause )},
-      ... Object.keys(o).filter( e=>! REPLACING_PROPERTIES.includes(e)).map( 
+      { cause   : __filterErrorToJSON( o.cause, depth+1 )},
+      ... Object.keys(o).filter( e=>! REPLACING_PROPERTIES.includes(e)).map(
         k=>({
-          [k] :__filterErrorToJSON(o[k])
+          [k] :__filterErrorToJSON(o[k],depth+1)
         })),
     );
   } else if ( o === null ) {
     return null;
   } else if ( o === undefined ) {
     return undefined;
+  } else if ( (inspect_custom_symbol in o ) && ( typeof o[inspect_custom_symbol] === 'function' ) ) {
+    return o[inspect_custom_symbol]( depth, {}, inspect  );
   } else if ( typeof o === 'object' ) {
-    return Object.assign( Array.isArray( o ) ? [] : {}, ... Object.keys(o).map(k=>({[k]:__filterErrorToJSON(o[k])})));
+    return Object.assign( Array.isArray( o ) ? [] : {}, ... Object.keys(o).map(k=>({[k]:__filterErrorToJSON(o[k], depth+1)})));
   } else {
     return o;
   }
