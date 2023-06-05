@@ -241,8 +241,10 @@ class AsyncContext {
    */
 
   async executeTransaction( fn, ...args ) {
+    // >>> DEACTIVATED (Mon, 05 Jun 2023 14:44:59 +0900)
     // ADDED (Wed, 31 Aug 2022 15:01:34 +0900)
-    fn = AsyncContext.executeSafely( fn );
+    // fn = AsyncContext.executeSafely( fn );
+    // <<< DEACTIVATED (Mon, 05 Jun 2023 14:44:59 +0900)
 
     try {
       await this.initializeContext();
