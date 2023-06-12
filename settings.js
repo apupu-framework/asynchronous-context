@@ -4,8 +4,25 @@ const { promises:async_fs } = fs;
 const { preventUndefined ,unprevent } = require( 'prevent-undefined' );
 const util = require('util');
 
-const settingFile = path.join( process.cwd(),  '.settings.json' );
-module.exports.settingFile = settingFile;
+
+let __filenameOfSettings = '.settings.json';
+
+const filenameOfSettings = (...args)=>{
+  if ( args.length !== 0 ) {
+    if ( typeof args[0] === 'string' ) {
+      __filenameOfSettings = args[0];
+    } else {
+      throw new Error( 'filenameOfSettings got an invalid argument' );
+    }
+  }
+  return path.join( process.cwd(), __filenameOfSettings );
+};
+module.exports.filenameOfSettings = filenameOfSettings;
+
+// const settingFile = path.join( process.cwd(),  '.settings.json' );
+// module.exports.settingFile = settingFile;
+
+
 
 // TODO THIS SHOULD BE CONFIGURABLE
 // (Wed, 01 Mar 2023 15:31:35 +0900)
@@ -23,7 +40,7 @@ function parseData( data, validator ) {
 function logging() {
   if ( DEBUG ) {
     console.log( '[asynchronous-context] reading setting file' );
-    console.log( '                path : ', settingFile );
+    console.log( '                path : ', filenameOfSettings() );
     console.log( '               ', new Error().stack.split('\n')[3].trim() );
   }
 }
@@ -33,7 +50,7 @@ function readSettings( validator ) {
   if ( typeof validator !== 'function' ) {
     throw new ReferenceError( `validator must be specified : '${validator}'` );
   }
-  const data = fs.readFileSync( settingFile , 'utf-8');
+  const data = fs.readFileSync( filenameOfSettings() , 'utf-8');
   return parseData( data, validator );;
 }
 
@@ -45,7 +62,7 @@ async function asyncReadSettings( validator ) {
   if ( typeof validator !== 'function' ) {
     throw new ReferenceError( `validator must be specified : '${validator}'` );
   }
-  const data = await async_fs.readFile( settingFile , 'utf-8');
+  const data = await async_fs.readFile( filenameOfSettings() , 'utf-8');
   return parseData( data, validator );
 }
 module.exports.asyncReadSettings = asyncReadSettings;
