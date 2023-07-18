@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+  },
+  "bak-dependencies": {
     "prevent-undefined": "^3.0.1",
     "runtime-typesafety": "^3.0.0",
     "vanilla-schema-validator": "^3.0.1"
