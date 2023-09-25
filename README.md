@@ -2,9 +2,9 @@
  Asynchronous-Context
 =======================
 
-This module offers the super class for all objects which used in **Kombucha.js**
-backend framework; that is, this is the core module of **Kombucha.js**. This
-module offers following functionalities.
+This module offers the superclass for all objects which is used in
+**[Kombucha.js][kombucha]** backend framework; that is, this is the core module
+of **[Kombucha.js][kombucha]**. This module offers following functionalities.
 
 - Automatically trace all method invocation and create trace log with a
   call-tree graph.
@@ -22,6 +22,7 @@ as following:
 In Kombucha.js, these are extended by using [mixin-prototypes][mixin-prototypes]
 which offers the multiple-inheritance functionality.
 
+[kombucha]:                          https://github.com/kombucha-js/
 [rerenderers]:                       https://github.com/kombucha-js/react-rerenderers/
 [react-rerenderers]:                 https://github.com/kombucha-js/react-rerenderers/
 [asynchronous-context]:              https://github.com/kombucha-js/asynchronous-context/
