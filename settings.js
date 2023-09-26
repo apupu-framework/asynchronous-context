@@ -1,12 +1,37 @@
 const path = require('path');
 const fs = require('fs');
 const { promises:async_fs } = fs;
-const { preventUndefined ,unprevent } = require( 'prevent-undefined' );
+const { preventUndefined , unprevent } = require( 'prevent-undefined' );
 const util = require('util');
 
 
+/*
+ * `__filenameOfSettings`
+ *
+ * "settings-file" is a file that contains configurations and settings for an
+ * Kombucha.js application instance. The default filename of the file is
+ * '.settings.json'.
+ *
+ * This filename can be changed by `filenameOfSettings()` function.
+ * See following.
+ */
 let __filenameOfSettings = '.settings.json';
 
+
+/**
+ * `filenameOfSettings()`
+ *
+ * filenameOfSettings() function sets and gets the filename of the default settings-file.
+ * When `filenameOfSettings()` is called  with any argument, set the first
+ * value on the argument list will be the filename of the default settings-file.
+ *
+ * A Kombucha.js application instance should always correspond to the existence
+ * of `settings-file` and the modification of the contents of the
+ * `settings-file` should be reflect to the current application setting.
+ *
+ * Modifying the default filename should be done before the current application
+ * instance starts to initialize; otherwise its consequence is undefined.
+ */
 const filenameOfSettings = (...args)=>{
   if ( args.length !== 0 ) {
     if ( typeof args[0] === 'string' ) {
@@ -23,47 +48,42 @@ module.exports.filenameOfSettings = filenameOfSettings;
 // module.exports.settingFile = settingFile;
 
 
-
 // TODO THIS SHOULD BE CONFIGURABLE
 // (Wed, 01 Mar 2023 15:31:35 +0900)
 const DEBUG = false;
-
-
-function parseData( data, validator ) {
-  const json = JSON.parse( data );
-  if ( DEBUG ) {
-    console.log( '[asynchronous-context] setting-file.json ',  util.inspect( json ,{colors:true}) );
-  }
-  return preventUndefined( json, validator );
-}
-
-function logging() {
+function loggingBeforeRead() {
   if ( DEBUG ) {
     console.log( '[asynchronous-context] reading setting file' );
     console.log( '                path : ', filenameOfSettings() );
     console.log( '               ', new Error().stack.split('\n')[3].trim() );
   }
 }
-
-function readSettings( validator ) {
-  logging();
-  if ( typeof validator !== 'function' ) {
-    throw new ReferenceError( `validator must be specified : '${validator}'` );
+function loggingAfterRead(json) {
+  if ( DEBUG ) {
+    console.log( '[asynchronous-context] setting-file.json ',  util.inspect( json ,{colors:true}) );
   }
+  return json;
+}
+
+function parseData( data ) {
+  const json = JSON.parse( data );
+  loggingAfterRead(json);
+  return json;
+}
+
+function readSettings() {
+  loggingBeforeRead();
   const data = fs.readFileSync( filenameOfSettings() , 'utf-8');
-  return parseData( data, validator );;
+  return parseData( data );;
 }
 
 module.exports.readSettings = readSettings;
 
 
-async function asyncReadSettings( validator ) {
-  logging();
-  if ( typeof validator !== 'function' ) {
-    throw new ReferenceError( `validator must be specified : '${validator}'` );
-  }
+async function asyncReadSettings() {
+  loggingBeforeRead();
   const data = await async_fs.readFile( filenameOfSettings() , 'utf-8');
-  return parseData( data, validator );
+  return parseData( data );
 }
 module.exports.asyncReadSettings = asyncReadSettings;
 
