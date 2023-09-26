@@ -2,7 +2,7 @@ const util   = require( 'node:util' );
 const assert = require( 'node:assert/strict' );
 const { test, describe, it, before, after }  = require( 'node:test' );
 const { schema } = require( 'vanilla-schema-validator' );
-const { AsyncContext } = require( './context.js' );
+const { AsyncContext } = require( '../context.js' );
 
 class TestAsyncContext extends AsyncContext {
   constructor(...args) {
@@ -55,16 +55,20 @@ describe( 'options test', ()=>{
   });
 
   it( 'fail and supress:true ', async ()=>{
-    const context = createContext().setOptions({showReport:true,suppressSuccessfulReport:true});
-    await context.executeTransaction( async function() {
-      assert.fail('kaboom!');
+    await assert.rejects( async ()=>{
+      const context = createContext().setOptions({showReport:true,suppressSuccessfulReport:true});
+      await context.executeTransaction( async function() {
+        assert.fail('kaboom!');
+      });
     });
   });
 
   it( 'fail and supress:false ', async ()=>{
-    const context = createContext().setOptions({showReport:true,suppressSuccessfulReport:false});
-    await context.executeTransaction( async function() {
-      assert.fail('kaboom!');
+    await assert.rejects( async()=>{
+      const context = createContext().setOptions({showReport:true,suppressSuccessfulReport:false});
+      await context.executeTransaction( async function() {
+        assert.fail('kaboom!');
+      });
     });
   });
 
@@ -74,9 +78,11 @@ describe( 'options test', ()=>{
 
 describe( 'prevent-undefined test', ()=>{
   it( 'reference a non-existent argument', async ()=>{
-    const context = createContext().setOptions({showReport:true,suppressSuccessfulReport:false});
-    await context.executeTransaction( async function() {
-      await this.typesafety_input_test2({test:'true'});
+    await assert.rejects( async()=>{
+      const context = createContext().setOptions({showReport:true,suppressSuccessfulReport:false});
+      await context.executeTransaction( async function() {
+        await this.typesafety_input_test2({test:'true'});
+      });
     });
   });
 });
