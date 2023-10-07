@@ -4,7 +4,6 @@ const { promises:async_fs } = fs;
 const { preventUndefined , unprevent } = require( 'prevent-undefined' );
 const util = require('util');
 
-
 /*
  * `__filenameOfSettings`
  *
@@ -16,6 +15,8 @@ const util = require('util');
  * See following.
  */
 let __filenameOfSettings = '.settings.json';
+
+
 
 
 /**

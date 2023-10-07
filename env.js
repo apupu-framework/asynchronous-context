@@ -1,5 +1,13 @@
 
 const { readSettings, filenameOfSettings } = require( './settings' );
+const ENV_SETTINGS = 'SETTINGS';
+{
+  if ( ENV_SETTINGS in process.env ) {
+    const filename = process.env.SETTINGS;
+    console.log( `a customized settings file is specified '${ filename }'` );
+    filenameOfSettings( filename );
+  }
+}
 
 const env = (settings)=>{
   const inenv = settings?.env ?? null;
@@ -10,7 +18,10 @@ const env = (settings)=>{
   }
   Object.entries(inenv).map(([k,v])=>{
     if ( typeof k === 'string' || typeof k === 'number' ) {
-      outenv[k] = v;
+      if ( k === ENV_SETTINGS ) {
+      } else {
+        outenv[k] = v;
+      }
     } else {
       console.warn( `asynchronous-context.env : WANING '${k}' is not a valid key for 'process.env'. ignored.` );
     }
