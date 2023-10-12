@@ -18,7 +18,6 @@ let __filenameOfSettings = '.settings.json';
 
 
 
-
 /**
  * `filenameOfSettings()`
  *
@@ -37,6 +36,11 @@ const filenameOfSettings = (...args)=>{
   if ( args.length !== 0 ) {
     if ( typeof args[0] === 'string' ) {
       __filenameOfSettings = args[0];
+      console.log( `the main file of 'asynchronous-context/settings' is set to ${__filenameOfSettings}` );
+
+      // Reflect to `proces.env` // (Tue, 10 Oct 2023 13:40:59 +0900)
+      process.env[ENV_SETTINGS] = args[0]
+
     } else {
       throw new Error( 'filenameOfSettings got an invalid argument' );
     }
@@ -66,27 +70,102 @@ function loggingAfterRead(json) {
   return json;
 }
 
-function parseData( data ) {
+function parseData( data, __filename ) {
   const json = JSON.parse( data );
+  // ADDED ( Sat, 07 Oct 2023 15:43:44 +0900)
+  json.filenameOfSettings = __filename;
   loggingAfterRead(json);
   return json;
 }
 
 function readSettings() {
   loggingBeforeRead();
-  const data = fs.readFileSync( filenameOfSettings() , 'utf-8');
-  return parseData( data );;
+  const __filename = filenameOfSettings();
+  const data = fs.readFileSync( __filename , 'utf-8');
+  return parseData( data, __filename );
 }
-
 module.exports.readSettings = readSettings;
 
 
 async function asyncReadSettings() {
   loggingBeforeRead();
-  const data = await async_fs.readFile( filenameOfSettings() , 'utf-8');
-  return parseData( data );
+  const __filename = filenameOfSettings();
+  const data = await async_fs.readFile( __filename , 'utf-8');
+  return parseData( data, __filename );
 }
 module.exports.asyncReadSettings = asyncReadSettings;
+
+
+
+
+
+
+
+
+
+/*
+ * (Sat, 07 Oct 2023 15:43:44 +0900)
+ *
+ * 1. Emulate functionalities of DOTENV.
+ *
+ * 2. The environment variable `SETTINGS` specifies the filename to read as
+ *    settings.
+ *
+ * 3. `SETTINGS` cannot be overridden via settings file itself.
+ *
+ */
+const ENV_SETTINGS = 'SETTINGS';
+module.exports.ENV_SETTINGS = ENV_SETTINGS;
+
+const reflectEnvToSettings = ()=>{
+  if ( ENV_SETTINGS in process.env ) {
+    const filename = process.env.SETTINGS;
+    console.log( `a customized settings file is specified '${ filename }'` );
+    __filenameOfSettings = filename;
+  }
+};
+
+const env = (settings)=>{
+  console.log( 'asynchronous-context/env is activated' );
+  const inenv = settings?.env ?? null;
+  const outenv = process.env;
+
+  if ( inenv === null ) {
+    throw new Error( `.env entry was not found in ${settings.filenameOfSettings}` );
+  }
+
+  Object.entries(inenv).map(([k,v])=>{
+    if ( typeof k === 'string' || typeof k === 'number' ) {
+      if ( k === ENV_SETTINGS ) {
+      } else {
+        outenv[k] = v;
+      }
+    } else {
+      console.warn( `asynchronous-context.env : WANING '${k}' is not a valid key for 'process.env'. ignored.` );
+    }
+  });
+};
+
+module.exports.env = env;
+
+const config = ()=>{
+  env( readSettings() );
+};
+module.exports.config = config;
+
+/*
+ * Integrate `env` to `settings`
+ * (Tue, 10 Oct 2023 11:59:37 +0900)
+ */
+{
+  reflectEnvToSettings();
+  // config();
+}
+
+
+
+
+
 
 
 
