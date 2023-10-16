@@ -2,17 +2,16 @@
  Asynchronous-Context
 =======================
 
-This module offers the superclass for all objects which is used in
-**[Kombucha.js][kombucha]** backend framework; that is, this is the core module
-of **[Kombucha.js][kombucha]**. This module offers following functionalities.
+This module offers the superclass for all objects which are to be created with
+**[Kombucha.js][kombucha]** backend framework. This module offers following
+functionalities.
 
 - Automatically trace all method invocation and create a trace log as a call
   tree graph.
 - Watch all method invocation and validate its input data as JSON objects and
   output data as the return value.
 
-There are already several modules which supports `asynchronous-context` module
-as following:
+There are currently four modules which inherit `asynchronous-context`.
 
 - [Asynchronous-Context][asynchronous-context]
 - [Asynchronous-Context-RPC][asynchronous-context-rpc]
@@ -51,3 +50,4 @@ which offers the multiple-inheritance functionality.
  History
 ----------
 (Mon, 25 Sep 2023 17:05:59 +0900)
+(Mon, 16 Oct 2023 18:41:16 +0900)
