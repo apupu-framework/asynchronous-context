@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Atsushi Oka",
   "license": "ISC",
   "dependencies": {
   },
@@ -14,5 +14,11 @@
     "prevent-undefined": "^3.0.1",
     "runtime-typesafety": "^3.0.0",
     "vanilla-schema-validator": "^3.0.1"
-  }
+  },
+  "author": "Atsushi Oka",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kombucha-js/asynchronous-context/issues"
+  },
+  "homepage": "https://github.com/kombucha-js/asynchronous-context#readme"
 }

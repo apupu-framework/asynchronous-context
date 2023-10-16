@@ -6,9 +6,9 @@ This module offers the superclass for all objects which is used in
 **[Kombucha.js][kombucha]** backend framework; that is, this is the core module
 of **[Kombucha.js][kombucha]**. This module offers following functionalities.
 
-- Automatically trace all method invocation and create trace log with a
-  call-tree graph.
-- Watch all method invocation and Validate its input data as JSON objects and
+- Automatically trace all method invocation and create a trace log as a call
+  tree graph.
+- Watch all method invocation and validate its input data as JSON objects and
   output data as the return value.
 
 There are already several modules which supports `asynchronous-context` module
