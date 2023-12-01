@@ -1,6 +1,6 @@
-const { AsyncContext } =  require( 'asynchronous-context/context' );
+import { AsyncContext } from 'asynchronous-context/context' ;
 
-function createTest( originalTest, createContext, options ) {
+export function createTest( originalTest, createContext, options ) {
   if ( ! createContext ) {
     throw new ReferenceError( '`createContext` must be specified' );
   }
@@ -27,6 +27,6 @@ function createTest( originalTest, createContext, options ) {
   return testex;
 }
 
-module.exports.createTest = createTest;
+// module.exports.createTest = createTest;
 
 

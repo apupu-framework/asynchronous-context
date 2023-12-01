@@ -46,8 +46,24 @@ which offers the multiple-inheritance functionality.
 
 
 
+ Ditch CJS and Migrate to ESM
+---------------------------------
+As of Dec 2023, there is no clean way to resolve the great confusion of CSJ/ESM.
+All existing bundlers have bugs to determine if a specified module is ESM or CJS
+and that causes endless discussions.
+
+There is the only and proper way to resolve this confusion ; accept the
+extension `mjs`. Accepting `mjs` effectively resolves all problem related to
+this ridiculous controversy.
+
+MJS is great. MJS is a legend. We love MJS. We should accept it exists.
+
+[MJS](http://clive.tries.fed.wiki/view/michael-jackson-script)
+
 
  History
 ----------
 (Mon, 25 Sep 2023 17:05:59 +0900)
 (Mon, 16 Oct 2023 18:41:16 +0900)
+(Fri, 01 Dec 2023 16:32:02 +0900) Add a note about MJS
+

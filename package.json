@@ -2,6 +2,7 @@
   "name": "asynchronous-context",
   "version": "1.0.0",
   "description": "Define the base class for objects to be created with a framework `Kombucha.js`",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

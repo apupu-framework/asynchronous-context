@@ -1,15 +1,19 @@
 
-const util = require( 'node:util' );
-const process = require( 'node:process' );
-const { Console } = require('node:console' );
-const { preventUndefined, unprevent } = require( 'prevent-undefined' );
+// const util = require( 'node:util' );
+// const process = require( 'process' );
+import { Console } from 'node:console' ;
+import { preventUndefined, unprevent } from 'prevent-undefined' ;
+
+const __util = typeof util === 'undefined' ? {} : util;
+const __process = (typeof process) === 'undefind' ? {} : process;
+// const { Console = function(){} } = console ;
 
 // const sanitizeAnsi = (s)=>
 //   typeof s ==='string' ? s.replace( /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '' ) : s;
 const sanitizeAnsi = (s)=>
   typeof s ==='string' ? s.replace( /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '' ) : s;
 
-const utilInspectCustom = require('util').inspect.custom;
+const utilInspectCustom = __util?.inspect?.custom ?? {};
 const recursivelySanitizeAnsi = (obj,stack=[])=>{
   // if ( stack.includes(obj) ) {
   //   console.log('found a circular reference');
@@ -31,6 +35,10 @@ const recursivelySanitizeAnsi = (obj,stack=[])=>{
     return sanitizeAnsi( obj );
   }
 };
+
+if ( typeof __util.inspect === 'undefined' ) {
+  __util.inspect = ()=>'';
+}
 
 const TERM_RESET      = "\x1b[0m" ;
 const TERM_BRIGHT     = "\x1b[1m" ;
@@ -59,8 +67,8 @@ const TERM_BG_CYAN    = "\x1b[46m";
 const TERM_BG_WHITE   = "\x1b[47m";
 
 const logger_console = new Console({
-  stdout: process.stdout,
-  stderr: process.stderr,
+  stdout: __process.stdout,
+  stderr: __process.stderr,
   ignoreErrors : true,
   colorMode : 'auto',
   inspectOptions : {
@@ -82,7 +90,7 @@ const logger_console = new Console({
 
 const writeLog = async(...args)=>logger_console.log( ...args );
 // const writeLogOptions = {colors:true,depth:null,maxArrayLength:null};
-// const writeLog = async(...args)=>[...args,'\n'].forEach(e=>process.stderr.write(typeof e === 'string' ? e : util.inspect(e,writeLogOptions)));
+// const writeLog = async(...args)=>[...args,'\n'].forEach(e=>__process.stderr.write(typeof e === 'string' ? e : __util.inspect(e,writeLogOptions)));
 
 const writeDirOptions = {
   colors         : true,
@@ -97,14 +105,14 @@ const writeDir = async (arg)=>logger_console.dir( arg, writeDirOptions );
 //3
 // const writeDir = async (arg)=>logger_console.log( JSON.stringify( arg, null, 2), writeDirOptions );
 
-const MSG_LOG                  = 'log';
-const MSG_SUCCEEDED            = 'succeeded';
-const MSG_WARNING              = 'warning';
-const MSG_ERROR                = 'error';
+export const MSG_LOG                  = 'log';
+export const MSG_SUCCEEDED            = 'succeeded';
+export const MSG_WARNING              = 'warning';
+export const MSG_ERROR                = 'error';
 
-module.exports.MSG_SUCCEEDED   = MSG_SUCCEEDED;
-module.exports.MSG_WARNING     = MSG_WARNING;
-module.exports.MSG_ERROR       = MSG_ERROR;
+// module.exports.MSG_SUCCEEDED   = MSG_SUCCEEDED;
+// module.exports.MSG_WARNING     = MSG_WARNING;
+// module.exports.MSG_ERROR       = MSG_ERROR;
 
 const MSG_TRACE_BEGIN          = 'enter';
 const MSG_TRACE_TRACE          = 'trace';
@@ -120,7 +128,7 @@ function formatArgs2( ...args ) {
 
 const formatArgs = formatArgs2;
 
-class AsyncContextLogger {
+export class AsyncContextLogger {
   constructor( name, options ) {
     this.name = name;
     this.options = options;
@@ -239,11 +247,11 @@ class AsyncContextLogger {
       await writeLog();
       await writeLog();
     } else {
-      // process.stderr.write( TERM_BG_RED + '#'.repeat(80) + TERM_RESET + '\n' );
-      // process.stderr.write( TERM_BG_RED + '#'.repeat(37) + 'ERROR' + '#'.repeat(38) + TERM_RESET + '\n' );
-      // process.stderr.write( TERM_BG_RED + '#'.repeat(80) + TERM_RESET + '\n' );
-      // process.stderr.write( this.formatLog({color:false}) );
-      // process.stderr.write( '\n'.repeat(2) );
+      // __process.stderr.write( TERM_BG_RED + '#'.repeat(80) + TERM_RESET + '\n' );
+      // __process.stderr.write( TERM_BG_RED + '#'.repeat(37) + 'ERROR' + '#'.repeat(38) + TERM_RESET + '\n' );
+      // __process.stderr.write( TERM_BG_RED + '#'.repeat(80) + TERM_RESET + '\n' );
+      // __process.stderr.write( this.formatLog({color:false}) );
+      // __process.stderr.write( '\n'.repeat(2) );
 
       await writeLog( TERM_BG_RED + '#'.repeat(80) + TERM_RESET );
       await writeLog( TERM_BG_RED + '#'.repeat(37) + 'ERROR' + '#'.repeat(38) + TERM_RESET );
@@ -276,7 +284,7 @@ class AsyncContextLogger {
             log : this.logList
           }
           ,(k,v)=>{
-            // process.stderr.write( k + '\n' )
+            // __process.stderr.write( k + '\n' )
             return filterErrorToJSON( v );
           }
           ,4
@@ -287,7 +295,7 @@ class AsyncContextLogger {
       let s;
       s =
         ''
-        + util.inspect(
+        + __util.inspect(
           {
             name: [ "<<", this.name, ">>", ... name ].join(' '),
             log : this.logList
@@ -302,7 +310,7 @@ class AsyncContextLogger {
       return s;
     }
   }
-  [require('util').inspect.custom]( depth, inspectOptions, inspect ) {
+  [__util.inspect.custom]( depth, inspectOptions, inspect ) {
     return "{ ... [logger with deep-nested values] ... }";
   }
   toJSON() {
@@ -310,5 +318,5 @@ class AsyncContextLogger {
   }
 }
 
-module.exports.AsyncContextLogger = AsyncContextLogger;
+// module.exports.AsyncContextLogger = AsyncContextLogger;
 

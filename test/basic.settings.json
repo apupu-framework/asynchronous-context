@@ -1,0 +1,8 @@
+{
+  "hello": {
+    "foo" : "bar"
+  },
+  "env" : {
+    "FOO" : "HELLO"
+  }
+}

@@ -1,3 +1,8 @@
+/*
+ * AsyncContextResult is no longer used.
+ * (Fri, 01 Dec 2023 18:18:18 +0900)
+ *
+ */
 
 const { preventUndefined, unprevent } = require( 'prevent-undefined' );
 // const { rtti, make_vali_factory } = require( 'rtti.js' );

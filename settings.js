@@ -1,8 +1,9 @@
-const path = require('path');
-const fs = require('fs');
-const { promises:async_fs } = fs;
-const { preventUndefined , unprevent } = require( 'prevent-undefined' );
-const util = require('util');
+import path from 'path';
+import { promises as async_fs  } from 'fs';
+import fs from 'fs';
+//const { promises:async_fs } = fs;
+import { preventUndefined , unprevent } from 'prevent-undefined' ;
+// const util = require('util');
 
 /*
  * `__filenameOfSettings`
@@ -32,7 +33,7 @@ let __filenameOfSettings = '.settings.json';
  * Modifying the default filename should be done before the current application
  * instance starts to initialize; otherwise its consequence is undefined.
  */
-const filenameOfSettings = (...args)=>{
+export const filenameOfSettings = (...args)=>{
   if ( args.length !== 0 ) {
     if ( typeof args[0] === 'string' ) {
       __filenameOfSettings = args[0];
@@ -47,7 +48,7 @@ const filenameOfSettings = (...args)=>{
   }
   return path.join( process.cwd(), __filenameOfSettings );
 };
-module.exports.filenameOfSettings = filenameOfSettings;
+// module.exports.filenameOfSettings = filenameOfSettings;
 
 // const settingFile = path.join( process.cwd(),  '.settings.json' );
 // module.exports.settingFile = settingFile;
@@ -78,22 +79,22 @@ function parseData( data, __filename ) {
   return json;
 }
 
-function readSettings() {
+export function readSettings() {
   loggingBeforeRead();
   const __filename = filenameOfSettings();
   const data = fs.readFileSync( __filename , 'utf-8');
   return parseData( data, __filename );
 }
-module.exports.readSettings = readSettings;
+// module.exports.readSettings = readSettings;
 
 
-async function asyncReadSettings() {
+export async function asyncReadSettings() {
   loggingBeforeRead();
   const __filename = filenameOfSettings();
   const data = await async_fs.readFile( __filename , 'utf-8');
   return parseData( data, __filename );
 }
-module.exports.asyncReadSettings = asyncReadSettings;
+// module.exports.asyncReadSettings = asyncReadSettings;
 
 
 
@@ -114,8 +115,8 @@ module.exports.asyncReadSettings = asyncReadSettings;
  * 3. `SETTINGS` cannot be overridden via settings file itself.
  *
  */
-const ENV_SETTINGS = 'SETTINGS';
-module.exports.ENV_SETTINGS = ENV_SETTINGS;
+export const ENV_SETTINGS = 'SETTINGS';
+// module.exports.ENV_SETTINGS = ENV_SETTINGS;
 
 const reflectEnvToSettings = ()=>{
   if ( ENV_SETTINGS in process.env ) {
@@ -124,34 +125,6 @@ const reflectEnvToSettings = ()=>{
     __filenameOfSettings = filename;
   }
 };
-
-const env = (settings)=>{
-  console.log( 'asynchronous-context/env is activated' );
-  const inenv = settings?.env ?? null;
-  const outenv = process.env;
-
-  if ( inenv === null ) {
-    throw new Error( `.env entry was not found in ${settings.filenameOfSettings}` );
-  }
-
-  Object.entries(inenv).map(([k,v])=>{
-    if ( typeof k === 'string' || typeof k === 'number' ) {
-      if ( k === ENV_SETTINGS ) {
-      } else {
-        outenv[k] = v;
-      }
-    } else {
-      console.warn( `asynchronous-context.env : WANING '${k}' is not a valid key for 'process.env'. ignored.` );
-    }
-  });
-};
-
-module.exports.env = env;
-
-const config = ()=>{
-  env( readSettings() );
-};
-module.exports.config = config;
 
 /*
  * Integrate `env` to `settings`

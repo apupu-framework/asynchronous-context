@@ -1,10 +1,12 @@
 'use strict';
 
-const { preventUndefined, unprevent } = require( 'prevent-undefined' );
-const { schema, make_vali_factory }   = require( 'vanilla-schema-validator' );
-const { typesafe_function }           = require( 'runtime-typesafety' );
-const { AsyncContextLogger } = require( './logger.js' );
-require( './schema' ).init( schema );
+import { preventUndefined, unprevent } from 'prevent-undefined' ;
+import { schema                    }   from 'vanilla-schema-validator' ;
+import { typesafe_function }           from 'runtime-typesafety' ;
+import { AsyncContextLogger }          from './logger.js' ;
+import { init as init_schema } from './schema.js';
+
+init_schema( schema );
 
 const MSG_ERROR_VALUE           = '__errorValue__';
 const MSG_INPUT_ERROR           = 'leave-with-input-object-validation-failure';
@@ -370,9 +372,8 @@ AsyncContext.referMethod = referMethod;
 
 
 
+export { AsyncContext };
 
-
-module.exports.AsyncContext = AsyncContext;
 
 // module.exports = module.exports;
 

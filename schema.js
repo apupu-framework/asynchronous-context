@@ -1,7 +1,7 @@
 
 const symbol = Symbol.for('asynchronous-context');
 
-function init( schema ) {
+export function init( schema ) {
   if ( symbol in schema ) {
     return schema;
   }
@@ -25,5 +25,5 @@ function init( schema ) {
     )`
 };
 
-module.exports.init = init;
+// module.exports.init = init;
 

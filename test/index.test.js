@@ -1,8 +1,7 @@
-const util   = require( 'node:util' );
-const assert = require( 'node:assert/strict' );
-const { test, describe, it, before, after }  = require( 'node:test' );
-const { schema } = require( 'vanilla-schema-validator' );
-const { AsyncContext } = require( '../context.js' );
+import assert from 'node:assert/strict';
+import { test, describe, it, before, after }  from 'node:test' ;
+import { schema } from 'vanilla-schema-validator' ;
+import { AsyncContext } from '../context.js' ;
 
 class TestAsyncContext extends AsyncContext {
   constructor(...args) {
