@@ -1,8 +1,8 @@
 
 import { describe, it } from 'node:test';
 import { strict as assert } from 'node:assert';
-import { filenameOfSettings, readSettings, asyncReadSettings } from "asynchronous-context/settings.js";
-import { dotenvFromSettings } from "asynchronous-context/env.js";
+import { filenameOfSettings, readSettings, asyncReadSettings } from "asynchronous-context/settings.mjs";
+import { dotenvFromSettings } from "asynchronous-context/env.mjs";
 
 filenameOfSettings( 'basic.settings.json' );
 dotenvFromSettings();

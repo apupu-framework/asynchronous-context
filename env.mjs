@@ -1,5 +1,5 @@
 
-import { ENV_SETTINGS, readSettings } from './settings.js';
+import { ENV_SETTINGS, readSettings } from './settings.mjs';
 
 export const env = (settings)=>{
   console.log( 'asynchronous-context/env is activated' );

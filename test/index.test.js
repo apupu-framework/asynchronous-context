@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test, describe, it, before, after }  from 'node:test' ;
 import { schema } from 'vanilla-schema-validator' ;
-import { AsyncContext } from '../context.js' ;
+import { AsyncContext } from '../context.mjs' ;
 
 class TestAsyncContext extends AsyncContext {
   constructor(...args) {

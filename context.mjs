@@ -3,8 +3,8 @@
 import { preventUndefined, unprevent } from 'prevent-undefined' ;
 import { schema                    }   from 'vanilla-schema-validator' ;
 import { typesafe_function }           from 'runtime-typesafety' ;
-import { AsyncContextLogger }          from './logger.js' ;
-import { init as init_schema } from './schema.js';
+import { AsyncContextLogger }          from './logger.mjs' ;
+import { init as init_schema } from './schema.mjs';
 
 init_schema( schema );
 

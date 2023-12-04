@@ -1,4 +1,4 @@
-import { AsyncContext } from 'asynchronous-context/context' ;
+import { AsyncContext } from './context.mjs' ;
 
 export function createTest( originalTest, createContext, options ) {
   if ( ! createContext ) {

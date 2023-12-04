@@ -3,7 +3,18 @@
   "version": "1.0.0",
   "description": "Define the base class for objects to be created with a framework `Kombucha.js`",
   "type": "module",
-  "main": "index.js",
+  "main": "context.mjs",
+  "exports":{
+      "./context" : "context.mjs",
+      "./context.mjs" : "context.mjs",
+      "./settings" : "settings.mjs",
+      "./settings.mjs" : "./settings.mjs",
+      "./env" : "./env.mjs",
+      "./env.mjs" : "./env.mjs",
+      "./logger" : "./logger.mjs",
+      "./logger.mjs" : "./logger.mjs",
+      "":""
+  },
   "scripts": {
     "test": "cd test; node --test"
   },
