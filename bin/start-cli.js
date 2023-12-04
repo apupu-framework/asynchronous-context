@@ -1,13 +1,14 @@
 #!/bin/env node
 
-const { shutdownDatabaseContext } = require( 'database-postgresql-context' );
+import { shutdownDatabaseContext } from 'database-postgresql-context' ;
+import repl from 'node:repl';
 
-function createContext() {
-  return require( 'coretbc/context' ).createContext( 'tBC-CLI' ).setOptions({autoCommit:false, showReport:true});
+async function createContext() {
+  return (await import( 'coretbc/context' )).createContext( 'tBC-CLI' ).setOptions({autoCommit:false, showReport:true});
 }
 
 async function tbc(f) {
-  const context = createContext();
+  const context = await createContext();
   await context.executeTransaction(f);
   await context.logger.reportResult();
 }
@@ -18,10 +19,8 @@ function initializeContext(context) {
 }
 
 async function execute () {
-  const process = require('process');
   const argv =  process.argv.slice(2);
   if ( argv.length == 0 ) {
-    const repl = require('node:repl');
     const replInstance = repl.start('> ')
     initializeContext( replInstance.context );
     replInstance.on( 'reset', initializeContext );

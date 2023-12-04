@@ -49,6 +49,12 @@ const ERROR_FILTER_THRU = (__e)=>{
 };
 
 
+const WRITE_DIR_OPTIONS = {
+  colors         : true,
+  depth          : null,
+  maxArrayLength : null,
+};
+
 /**
  * TAG_PROC_USERS
  */
@@ -59,6 +65,8 @@ let __defaultOptions = {
   coloredReport            : false,
   reportMethod             : 'console',
   filterError              : ERROR_FILTER_THRU,
+  writeLog                 : async(...arg)=>console.log(...args),
+  writeDir                 : async(...arg)=>console.dir(...args, WRITE_DIR_OPTIONS ),
 };
 
 class AsyncContext {
@@ -283,7 +291,8 @@ class AsyncContext {
       try {
         await i.call(this);
       } catch ( e ) {
-        this.logger.error(e);
+        console.error( 'initializeContext error',e );
+        this.logger.error( 'initializeContext error', e );
       }
     }
   }
@@ -296,7 +305,8 @@ class AsyncContext {
       try {
         await i.call(this,is_successful);
       } catch ( e ) {
-        this.logger.error(e);
+        console.error('finalizeContext error',e);
+        this.logger.error('finalizeContext error',e);
       }
     }
   }
