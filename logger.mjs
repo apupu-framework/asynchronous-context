@@ -1,11 +1,9 @@
 
 // const util = require( 'node:util' );
 // const process = require( 'process' );
-import { Console } from 'node:console' ;
 import { preventUndefined, unprevent } from 'prevent-undefined' ;
+import { logger_console } from "./console.mjs" ;
 
-const __util = typeof util === 'undefined' ? {} : util;
-const __process = (typeof process) === 'undefind' ? {} : process;
 const sanitizeAnsi = (s)=>
   typeof s ==='string' ? s.replace( /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '' ) : s;
 
@@ -31,9 +29,6 @@ const recursivelySanitizeAnsi = (obj,stack=[])=>{
   }
 };
 
-if ( typeof __util.inspect === 'undefined' ) {
-  __util.inspect = ()=>'';
-}
 
 const TERM_RESET      = "\x1b[0m" ;
 const TERM_BRIGHT     = "\x1b[1m" ;
@@ -61,27 +56,6 @@ const TERM_BG_MAGENTA = "\x1b[45m";
 const TERM_BG_CYAN    = "\x1b[46m";
 const TERM_BG_WHITE   = "\x1b[47m";
 
-const logger_console = new Console({
-  stdout: __process.stdout,
-  stderr: __process.stderr,
-  ignoreErrors : true,
-  colorMode : 'auto',
-  inspectOptions : {
-    showHidden : false,
-    depth : null,
-    // colors : true,
-    customInspect : true,
-    showProxy : false,
-    maxArrayLength : null,
-    maxStringLengtha : null,
-    breakLength : 80,
-    compact : 3,
-    sorted : false,
-    getters:  false,
-    numericSeparator : false,
-  },
-  groupIndentation : 2,
-});
 
 const writeLog = async(...args)=>logger_console.log( ...args );
 
