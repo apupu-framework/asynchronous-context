@@ -176,7 +176,7 @@ function filterErrorToJSON( input ) {
 }
 
 const inspect_custom_symbol = Symbol.for('nodejs.util.inspect.custom');
-const { inspect } = require( 'node:util' );
+// const { inspect } = require( 'node:util' );
 
 
 function __filterErrorToJSON(o, depth ) {
@@ -197,7 +197,9 @@ function __filterErrorToJSON(o, depth ) {
   } else if ( o === undefined ) {
     return undefined;
   } else if ( (typeof o === 'object') && (inspect_custom_symbol in o ) && ( typeof o[inspect_custom_symbol] === 'function' ) ) {
-    return o[inspect_custom_symbol]( depth, {}, inspect  );
+    // return o[inspect_custom_symbol]( depth, {}, inspect  );
+    console.warn('an reference to util is ignored');
+    return null;
   } else if ( typeof o === 'object' ) {
     return Object.assign( Array.isArray( o ) ? [] : {}, ... Object.keys(o).map(k=>({[k]:__filterErrorToJSON(o[k], depth+1)})));
   } else {
