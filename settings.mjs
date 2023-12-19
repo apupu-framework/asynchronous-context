@@ -66,7 +66,8 @@ function loggingBeforeRead() {
 }
 function loggingAfterRead(json) {
   if ( DEBUG ) {
-    console.log( '[asynchronous-context] setting-file.json ',  util.inspect( json ,{colors:true}) );
+    // console.log( '[asynchronous-context] setting-file.json ',  util.inspect( json ,{colors:true}) );
+    console.log( '[asynchronous-context] setting-file.json ',  json );
   }
   return json;
 }
