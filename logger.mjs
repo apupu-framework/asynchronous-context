@@ -87,12 +87,18 @@ function formatArgs2( ...args ) {
 const formatArgs = formatArgs2;
 
 export class AsyncContextLogger {
+  name   = 'AsyncContextLogger';
+  option = [];
   constructor( name, options ) {
-    this.name = name;
-    this.options = options;
+    this.reset( name, options );
+  }
+
+  reset( name, options ) {
+    this.name         = name    ?? this.name;
+    this.options      = options ?? this.options;
     this.logList      = [];
     this.logListStack = [];
-    this.reportCount = 0;
+    this.reportCount  = 0;
   }
 
   output( nargs) {
