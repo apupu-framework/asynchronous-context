@@ -73,7 +73,6 @@ class AsyncContext {
   constructor ( name = 'AsyncContext' ) {
     this.name                = name;
     this.__options           = Object.assign( {}, __defaultOptions );
-    this.__pgClient          = null;
     this.contextInitializers = [];
     this.contextFinalizers   = [];
     // this.A0= 'DatabaseContextError';
