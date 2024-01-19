@@ -12,7 +12,6 @@ export function init( schema ) {
 
   schema.t_async_context_options = schema.compile`
     object(
-      autoCommit               : boolean(),
       showReport               : boolean(),
       suppressSuccessfulReport : boolean(),
       coloredReport            : boolean(),

@@ -1,7 +1,7 @@
 'use strict';
 
 import { preventUndefined, unprevent } from 'prevent-undefined' ;
-import { schema                    }   from 'vanilla-schema-validator' ;
+import { schema, trace_validator   }   from 'vanilla-schema-validator' ;
 import { typesafe_function }           from 'runtime-typesafety' ;
 import { AsyncContextLogger }          from './logger.mjs' ;
 import { init as init_schema }         from './schema.mjs';
@@ -95,10 +95,16 @@ class AsyncContext {
 
   setOptions(__options) {
     this.__options  = Object.assign( this.__options, __options );
-    if ( ! schema.t_async_context_options()( this.__options ) ) {
-      console.error( this.__options );
-      throw new Error( 'specified options was incorrect' );
+
+    const are_valid_options = trace_validator( schema.t_async_context_options(), this.__options );
+    if ( ! are_valid_options.value ) {
+      throw new Error( 'specified options was incorrect ' + are_valid_options.report() );
     }
+
+    // if ( ! schema.t_async_context_options()( this.__options ) ) {
+    //   console.error( this.__options );
+    //   throw new Error( 'specified options was incorrect' );
+    // }
     return this;
   }
 
