@@ -86,6 +86,8 @@ function formatArgs2( ...args ) {
 
 const formatArgs = formatArgs2;
 
+const now = ()=>new Date();
+
 export class AsyncContextLogger {
   name   = 'AsyncContextLogger';
   option = [];
@@ -108,13 +110,15 @@ export class AsyncContextLogger {
   error(...args) {
     this.logList.push({
       type   : MSG_ERROR,
+      time   : now(),
       value  : formatArgs(...args),
     });
   }
 
   warn(...args) {
     this.logList.push({
-      type : MSG_WARNING,
+      type   : MSG_WARNING,
+      time   : now(),
       value  : formatArgs(...args),
     });
   }
@@ -122,6 +126,7 @@ export class AsyncContextLogger {
   log(...args) {
     this.logList.push({
       type   : MSG_LOG,
+      time   : now(),
       value  : formatArgs(...args),
     });
   }
@@ -129,6 +134,7 @@ export class AsyncContextLogger {
   trace(...args) {
     this.logList.push({
       type   : MSG_TRACE_TRACE,
+      time   : now(),
       value  : formatArgs(...args),
     });
   }
@@ -149,6 +155,7 @@ export class AsyncContextLogger {
   enter(name,args) {
     this.output({
       type   : MSG_TRACE_BEGIN,
+      time   : now(),
       name   : name,
       args   : ( unprevent(args) ),
     });
@@ -160,6 +167,7 @@ export class AsyncContextLogger {
     this.__ascendLog();
     this.output({
       type   : MSG_TRACE_END,
+      time   : now(),
       name   : name,
       status : 'succeeded',
       result : ( unprevent( result )),
@@ -170,6 +178,7 @@ export class AsyncContextLogger {
     this.__ascendLog();
     this.output({
       type   : MSG_TRACE_END,
+      time   : now(),
       name   : name,
       status : 'error',
       result : ( unprevent( result )),
