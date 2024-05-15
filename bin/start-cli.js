@@ -4,7 +4,7 @@ import { shutdownDatabaseContext } from 'database-postgresql-context' ;
 import repl from 'node:repl';
 
 async function createContext() {
-  return (await import( 'coretbc/context' )).createContext( 'tBC-CLI' ).setOptions({autoCommit:false, showReport:true});
+  return (await import( 'coretbc/context' )).createContext( 'tBC-CLI' ).setOptions({ showReport:true });
 }
 
 async function tbc(f) {

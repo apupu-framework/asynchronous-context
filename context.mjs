@@ -59,7 +59,6 @@ const WRITE_DIR_OPTIONS = {
  * TAG_PROC_USERS
  */
 let __defaultOptions = {
-  autoCommit               : false,
   showReport               : false,
   suppressSuccessfulReport : false,
   coloredReport            : false,
