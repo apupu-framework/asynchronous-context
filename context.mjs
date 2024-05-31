@@ -2,7 +2,7 @@
 
 import { preventUndefined, unprevent } from 'prevent-undefined' ;
 import { schema, trace_validator   }   from 'vanilla-schema-validator' ;
-import { typesafe_function }           from 'runtime-typesafety' ;
+import { typesafe_function, get_typesafe_parsed_args } from 'runtime-typesafety' ;
 import { AsyncContextLogger }          from './logger.mjs' ;
 import { init as init_schema }         from './schema.mjs';
 
@@ -133,11 +133,11 @@ class AsyncContext {
    * See the documentation of `fold-args`  for further information about
    * `args-folding-call-convention`.
    */
-  static executeSafely( fn, ...args ) {
-    if ( fn.constructor.name !== 'AsyncFunction' ) {
-      throw new Error( `HEADS UPP LOOK AT MEEEEEEEEEEEEEEEE ITS NOT AN ASYNC FUNCTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ${fn.constructor.name}` );
-    }
-    return typesafe_function( fn, ...args, this.event_handlers );
+  static executeSafely( ...args ) {
+    // if ( fn.constructor.name !== 'AsyncFunction' ) {
+    //   throw new Error( `HEADS UPP LOOK AT MEEEEEEEEEEEEEEEE ITS NOT AN ASYNC FUNCTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ${fn.constructor.name}` );
+    // }
+    return typesafe_function( ...args, this.event_handlers );
   }
 
   static event_handlers = {
@@ -326,22 +326,18 @@ function create(...args) {
 }
 AsyncContext.create = create;
 
-function  __defineMethod( isOverride, fn, ... args ) {
+function  __defineMethod( isOverride, ... args ) {
   // A static dynamic function; which you can't perform on JAVA.
   const targetClass = this;
 
-  if ( ! ( fn instanceof Function )  ) {
-    throw new TypeError( 'the last argument must be a function object' );
-  }
+  // (Tue, 06 Sep 2022 11:42:27 +0900)
+  // note that `args` arguments are ignored when fn is already a typesafe function.
+  const fn = AsyncContext.executeSafely( ...args );
   const methodName = fn.name;
 
   if ( ! methodName ) {
     throw new TypeError( 'no method name was specified' );
   }
-
-  // (Tue, 06 Sep 2022 11:42:27 +0900)
-  // note that `args` arguments are ignored when fn is already a typesafe function.
-  fn = AsyncContext.executeSafely( fn, ...args );
 
   // Check naming conflicts.
   if ( ! isOverride ) {
