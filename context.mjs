@@ -2,7 +2,7 @@
 
 import { preventUndefined, unprevent } from 'prevent-undefined' ;
 import { schema, trace_validator   }   from 'vanilla-schema-validator' ;
-import { typesafe_function, get_typesafe_parsed_args } from 'runtime-typesafety' ;
+import { typesafe_function  } from 'runtime-typesafety' ;
 import { AsyncContextLogger }          from './logger.mjs' ;
 import { init as init_schema }         from './schema.mjs';
 
