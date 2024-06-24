@@ -67,6 +67,70 @@ const writeDirOptions = {
 
 const writeDir = async (arg)=>logger_console.dir( arg, writeDirOptions );
 
+
+
+class ConsoleLogger {
+  async beginReport( nargs ) {
+    const {
+      name,
+    } = nargs;
+    await writeLog( '='.repeat(80) );
+    await writeLog( 'executeTransaction:start ' + name );
+  }
+
+  async endReport( nargs ) {
+    const {
+      is_successful,
+      name,
+      log,
+      suppressSuccessfulReport,
+    } = nargs;
+
+    const result = { name, log };
+
+    await writeLog( 'executeTransaction:end' );
+    await writeLog( '='.repeat(80) );
+    await writeLog( );
+
+    if ( is_successful ) {
+      await writeLog( TERM_BG_BLUE + '#'.repeat(38) + 'OKAY' + '#'.repeat(39) + TERM_RESET  );
+
+      if ( suppressSuccessfulReport ) {
+        //
+      } else {
+        await writeDir( result  );
+      }
+      await writeLog();
+      await writeLog();
+    } else {
+      await writeLog( TERM_BG_RED + '#'.repeat(80) + TERM_RESET );
+      await writeLog( TERM_BG_RED + '#'.repeat(37) + 'ERROR' + '#'.repeat(38) + TERM_RESET );
+      await writeLog( TERM_BG_RED + '#'.repeat(80) + TERM_RESET );
+      await writeDir( result );
+      await writeLog( );
+      await writeLog( );
+    }
+  }
+}
+const CONSOLE_LOGGER = new ConsoleLogger();
+
+class DummyLogger {
+  async beginReport(nargs) {
+  }
+  async endReport(nargs) {
+  }
+}
+const DUMMY_LOGGER = new DummyLogger();
+
+class FileLogger {
+  async beginReport(nargs) {
+  }
+  async endReport(nargs) {
+  }
+}
+
+
+
 export const MSG_LOG                  = 'log';
 export const MSG_SUCCEEDED            = 'succeeded';
 export const MSG_WARNING              = 'warning';
@@ -83,14 +147,14 @@ function formatArgs1( ...args ) {
 function formatArgs2( ...args ) {
   return [...args];
 }
-
 const formatArgs = formatArgs2;
-
 const now = ()=>new Date();
 
 export class AsyncContextLogger {
   name   = 'AsyncContextLogger';
   option = [];
+  // logger_handler = CONSOLE_LOGGER;
+  logger_handler = DUMMY_LOGGER;
   constructor( name, options ) {
     this.reset( name, options );
   }
@@ -186,42 +250,26 @@ export class AsyncContextLogger {
   }
 
   async reportResult( is_successful ) {
-    await this.beginReport();
-    await this.endReport( is_successful );
+    await this.beginReport({ is_successful });
+    await this.endReport(  { is_successful });
   }
 
-  async beginReport( is_successful ) {
-    await writeLog( '='.repeat(80) );
-    await writeLog( 'executeTransaction:start ' + this.name );
+  async beginReport(nargs) {
+    this?.logger_handler?.beginReport({
+      name : this.name,
+      log  : this.logList,
+      ...this.options,
+      ...nargs
+    });
   }
 
-  async endReport( is_successful ) {
-    const name = this.name;
-    const log  = this.logList;
-    const result = { name, log };
-
-    await writeLog( 'executeTransaction:end' );
-    await writeLog( '='.repeat(80) );
-    await writeLog( );
-
-    if ( is_successful ) {
-      await writeLog( TERM_BG_BLUE + '#'.repeat(38) + 'OKAY' + '#'.repeat(39) + TERM_RESET  );
-
-      if ( this?.options?.suppressSuccessfulReport ) {
-        //
-      } else {
-        await writeDir( result  );
-      }
-      await writeLog();
-      await writeLog();
-    } else {
-      await writeLog( TERM_BG_RED + '#'.repeat(80) + TERM_RESET );
-      await writeLog( TERM_BG_RED + '#'.repeat(37) + 'ERROR' + '#'.repeat(38) + TERM_RESET );
-      await writeLog( TERM_BG_RED + '#'.repeat(80) + TERM_RESET );
-      await writeDir( result );
-      await writeLog( );
-      await writeLog( );
-    }
+  async endReport(nargs) {
+    this?.logger_handler?.endReport({
+      name : this.name,
+      log  : this.logList,
+      ...this.options,
+      ...nargs,
+    });
   }
 }
 
