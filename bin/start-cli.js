@@ -4,13 +4,13 @@ import { shutdownDatabaseContext } from 'database-postgresql-context' ;
 import repl from 'node:repl';
 
 async function createContext() {
-  return (await import( 'coretbc/context' )).createContext( 'tBC-CLI' ).setOptions({ showReport:true });
+  return (await import( 'coretbc/context' )).createContext().setOptions({ title : 'tBC-CLI', showReport:true });
 }
 
 async function tbc(f) {
   const context = await createContext();
   await context.executeTransaction(f);
-  await context.logger.reportResult();
+  await context.logger.reportResult(true);
 }
 
 function initializeContext(context) {

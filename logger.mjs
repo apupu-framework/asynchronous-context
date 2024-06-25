@@ -123,11 +123,35 @@ class DummyLogger {
 const DUMMY_LOGGER = new DummyLogger();
 
 class FileLogger {
+  constructor(options){
+    this.options = options;
+  }
   async beginReport(nargs) {
   }
   async endReport(nargs) {
   }
 }
+
+const select_logger_handler = (options)=>{
+  if ( options?.showReport ) {
+    switch ( options?.reportMethod ) {
+      case 'console' : {
+        return CONSOLE_LOGGER;
+      };
+      case 'ignore' : {
+        return DUMMY_LOGGER;
+      };
+      case 'file' : {
+        return new FileLogger(options);
+      };
+      default : {
+        return CONSOLE_LOGGER;
+      };
+    }
+  } else {
+    return DUMMY_LOGGER;
+  }
+};
 
 
 
@@ -153,8 +177,8 @@ const now = ()=>new Date();
 export class AsyncContextLogger {
   name   = 'AsyncContextLogger';
   option = [];
-  // logger_handler = CONSOLE_LOGGER;
-  logger_handler = DUMMY_LOGGER;
+  logger_handler = null;
+  // logger_handler = DUMMY_LOGGER;
   constructor( name, options ) {
     this.reset( name, options );
   }
@@ -162,6 +186,7 @@ export class AsyncContextLogger {
   reset( name, options ) {
     this.name         = name    ?? this.name;
     this.options      = options ?? this.options;
+    this.logger_handler = select_logger_handler( options );
     this.logList      = [];
     this.logListStack = [];
     this.reportCount  = 0;

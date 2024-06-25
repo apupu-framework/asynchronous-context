@@ -14,8 +14,8 @@ export function createTest( originalTest, createContext, options ) {
     args[last] = async (...args2 )=>{
       try {
         return await (
-          createContext( msg )
-            .setOptions( options )
+          createContext()
+            .setOptions({ ...options, title: msg })
             .executeTransaction( AsyncContext.executeSafely( fn ),  ...args2 ));
       } catch (e) {
         // console.error(e);

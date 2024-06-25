@@ -76,14 +76,10 @@ class AsyncContext {
     this.contextFinalizers   = [];
     // this.A0= 'DatabaseContextError';
     this.contextInitializers.push( function asyncContextInitializer() {
-      if ( this.getOptions().showReport ) {
-        this.logger.beginReport();
-      }
+      this.logger.beginReport();
     });
     this.contextFinalizers.push( function asyncContextFinalizer(is_successful) {
-      if ( this.getOptions().showReport ) {
-        this.logger.endReport(is_successful);
-      }
+      this.logger.endReport({is_successful});
     });
     this.logger = new AsyncContextLogger( name, this.__options );
   }
@@ -99,6 +95,8 @@ class AsyncContext {
     if ( ! are_valid_options.value ) {
       throw new Error( 'specified options was incorrect ' + are_valid_options.report() );
     }
+
+    this.logger.reset( this.name, this.__options );
 
     // if ( ! schema.t_async_context_options()( this.__options ) ) {
     //   console.error( this.__options );

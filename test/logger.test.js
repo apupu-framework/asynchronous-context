@@ -9,7 +9,7 @@ class TestAsyncContext extends AsyncContext {
   }
 }
 function createContext() {
-  return TestAsyncContext.create('hello');
+  return TestAsyncContext.create().setOptions({title:'hello'}};
 }
 
 
