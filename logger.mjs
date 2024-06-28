@@ -134,7 +134,7 @@ class FileLogger {
 
 const select_logger_handler = (options)=>{
   if ( options?.showReport ) {
-    switch ( options?.reportMethod ) {
+    switch ( options?.report_method ) {
       case 'console' : {
         return CONSOLE_LOGGER;
       };
