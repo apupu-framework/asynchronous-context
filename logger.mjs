@@ -198,7 +198,7 @@ class FileLogger {
     const logger_full_filename = this.modules.path.join( this.output_dir, logger_dirname, logger_filename );
     const logger_full_dirname = this.modules.path.join( this.output_dir, logger_dirname );
 
-    console.log( logger_full_dirname, logger_full_filename );
+    // console.log( logger_full_dirname, logger_full_filename );
 
     await this.modules.fsp.mkdir( logger_full_dirname, { recursive : true, mode:0o777 } );
 
