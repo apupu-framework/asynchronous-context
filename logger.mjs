@@ -2,7 +2,7 @@
 // const util = require( 'node:util' );
 // const process = require( 'process' );
 import { preventUndefined, unprevent } from 'prevent-undefined' ;
-import { logger_console } from "./logger-console.mjs" ;
+import { logger_console ,create_logger_console } from "./logger-console.mjs" ;
 
 const sanitizeAnsi = (s)=>
   typeof s ==='string' ? s.replace( /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '' ) : s;
@@ -68,7 +68,6 @@ const writeDirOptions = {
 const writeDir = async (arg)=>logger_console.dir( arg, writeDirOptions );
 
 
-
 class ConsoleLogger {
   async beginReport( nargs ) {
     const {
@@ -122,19 +121,104 @@ class DummyLogger {
 }
 const DUMMY_LOGGER = new DummyLogger();
 
+
+const pad = (l,v)=>String(v).padStart(2,'0');
+const to_yyyymmdd_hhmmss = (d)=>(
+  ''
+  + pad( 4, d.getFullYear()     )
+  + pad( 2, d.getMonth()    + 1 )
+  + pad( 2, d.getDate()         )
+  + '-'
+  + pad( 2, d.getHours()        )
+  + pad( 2, d.getMinutes()      )
+  + pad( 2, d.getSeconds()      )
+);
+
+const to_dirname = (d)=>(
+  ''
+  + pad( 4, d.getFullYear()     )
+  + '/'
+  + pad( 2, d.getMonth()    + 1 )
+  + '/'
+  + pad( 2, d.getDate()         )
+  + '/'
+  + pad( 2, d.getHours()        )
+  + '/'
+  + pad( 2, d.getMinutes()      )
+);
+
+const to_filename = (d)=>(
+  ''
+  + to_yyyymmdd_hhmmss( d )
+);
+
+
+const d = new Date();
+console.log( to_filename( d ) );
+console.log( to_filename( d ) );
+
+
 class FileLogger {
   constructor(options){
     this.options = options;
+    this.output_dir = options?.logger_output_dir ?? "./";
+    this.modules =null;
   }
+
+  async init_modules_lazily() {
+    const result = await Promise.all([
+      import( "node:path" ),
+      import( "node:fs" ),
+      import( "node:fs/promises" ),
+    ]);
+    this.modules = {
+      path : result[0],
+      fs   : result[1],
+      fsp  : result[2],
+    };
+  }
+
   async beginReport(nargs) {
+    if ( ! this.modules ) {
+      await this.init_modules_lazily();
+    }
   }
+
   async endReport(nargs) {
+    const {
+      is_successful,
+      name,
+      log,
+      suppressSuccessfulReport,
+    } = nargs;
+
+    const now = new Date();
+    const logger_filename = to_filename( now ) + '.json';
+    const logger_dirname =  to_dirname( now );
+    const logger_full_filename = this.modules.path.join( this.output_dir, logger_dirname, logger_filename );
+    const logger_full_dirname = this.modules.path.join( this.output_dir, logger_dirname );
+
+    console.log( logger_full_dirname, logger_full_filename );
+
+    await this.modules.fsp.mkdir( logger_full_dirname, { recursive : true, mode:0o777 } );
+
+    const a_write_stream = this.modules.fs.createWriteStream( logger_full_filename, {flags:'w' } );
+    try {
+      const c = create_logger_console( a_write_stream, a_write_stream );
+      c.dir( log, {
+        colors         : false,
+        depth          : null,
+        maxArrayLength : null,
+      });
+    } finally {
+      a_write_stream.end();
+    }
   }
 }
 
 const select_logger_handler = (options)=>{
   if ( options?.showReport ) {
-    switch ( options?.report_method ) {
+    switch ( options?.logger_report_method ) {
       case 'console' : {
         return CONSOLE_LOGGER;
       };
@@ -166,7 +250,7 @@ const MSG_TRACE_END            = 'leave';
 const MSG_TRACE_END_WITH_ERROR = 'trace-end-with-error';
 
 function formatArgs1( ...args ) {
-  return args.length == 1 ? args.pop() : args.map(e=>e!=null?unprevent(e).toString():'(null)').join(' ');
+  return args.length == 1 ? args.pop() : args.map( e=>e!=null ? unprevent(e).toString():'(null)').join(' ');
 }
 function formatArgs2( ...args ) {
   return [...args];
