@@ -2,7 +2,7 @@
 // const util = require( 'node:util' );
 // const process = require( 'process' );
 import { preventUndefined, unprevent } from 'prevent-undefined' ;
-import { logger_console } from "./console.mjs" ;
+import { logger_console } from "./logger-console.mjs" ;
 
 const sanitizeAnsi = (s)=>
   typeof s ==='string' ? s.replace( /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '' ) : s;
