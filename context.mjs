@@ -75,11 +75,11 @@ class AsyncContext {
     this.contextInitializers = [];
     this.contextFinalizers   = [];
     // this.A0= 'DatabaseContextError';
-    this.contextInitializers.push( function asyncContextInitializer() {
-      this.logger.beginReport();
+    this.contextInitializers.push( async function asyncContextInitializer() {
+      await this.logger.beginReport();
     });
-    this.contextFinalizers.push( function asyncContextFinalizer(is_successful) {
-      this.logger.endReport({is_successful});
+    this.contextFinalizers.push( async function asyncContextFinalizer(is_successful) {
+      await this.logger.endReport({is_successful});
     });
     this.logger = new AsyncContextLogger( name, this.__options );
   }

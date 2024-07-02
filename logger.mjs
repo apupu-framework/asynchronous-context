@@ -171,6 +171,9 @@ class FileLogger {
       import( "node:fs" ),
       import( "node:fs/promises" ),
     ]);
+
+    // console.log( '2ObonT+kh51genRM606Azg==', 'Promise.all', result );
+
     this.modules = {
       path : result[0],
       fs   : result[1],
@@ -191,6 +194,8 @@ class FileLogger {
       log,
       suppressSuccessfulReport,
     } = nargs;
+
+    // console.log( '2ObonT+kh51genRM606Azg==', 'this.modules', this.modules );
 
     const now = new Date();
     const logger_filename = to_filename( now ) + '.json';
@@ -364,7 +369,7 @@ export class AsyncContextLogger {
   }
 
   async beginReport(nargs) {
-    this?.logger_handler?.beginReport({
+    await this?.logger_handler?.beginReport({
       name : this.name,
       log  : this.logList,
       ...this.options,
@@ -373,7 +378,7 @@ export class AsyncContextLogger {
   }
 
   async endReport(nargs) {
-    this?.logger_handler?.endReport({
+    await this?.logger_handler?.endReport({
       name : this.name,
       log  : this.logList,
       ...this.options,
