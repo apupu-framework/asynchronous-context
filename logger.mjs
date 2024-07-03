@@ -265,20 +265,24 @@ const now = ()=>new Date();
 
 export class AsyncContextLogger {
   name   = 'AsyncContextLogger';
-  option = [];
+  options = {};
   logger_handler = null;
   // logger_handler = DUMMY_LOGGER;
   constructor( name, options ) {
-    this.reset( name, options );
+    this.setOptions( name, options );
+    this.reset();
   }
 
-  reset( name, options ) {
-    this.name         = name    ?? this.name;
-    this.options      = options ?? this.options;
+  setOptions( name, options ) {
+    this.name           = name    ?? this.name;
+    this.options        = options ?? this.options;
     this.logger_handler = select_logger_handler( options );
-    this.logList      = [];
-    this.logListStack = [];
-    this.reportCount  = 0;
+  }
+
+  reset() {
+    this.logList        = [];
+    this.logListStack   = [];
+    this.reportCount    = 0;
   }
 
   output( nargs) {

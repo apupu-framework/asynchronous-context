@@ -96,7 +96,7 @@ class AsyncContext {
       throw new Error( 'specified options was incorrect ' + are_valid_options.report() );
     }
 
-    this.logger.reset( this.name, this.__options );
+    this.logger.setOptions( this.name, this.__options );
 
     // if ( ! schema.t_async_context_options()( this.__options ) ) {
     //   console.error( this.__options );
