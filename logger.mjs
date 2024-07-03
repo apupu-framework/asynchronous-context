@@ -203,10 +203,13 @@ const generate_default_filename = (path, t, options )=>{
 
 
 class FileLogger {
-  constructor(options){
+  constructor(options={}){
+    if ( typeof options !== 'object' ) {
+      throw new TypeError( 'options is not an object' );
+    }
     this.options                        = options;
-    this.logger_output_dir              = options?.logger_output_dir      ?? "./";
-    this.logger_output_filename         = options?.logger_output_filename ?? null;
+    // this.logger_output_dir              = options?.logger_output_dir      ?? "./";
+    // this.logger_output_filename         = options?.logger_output_filename ?? null;
     this.modules =null;
   }
 
@@ -238,23 +241,21 @@ class FileLogger {
     } = nargs;
 
     await this.init_modules_lazily();
-    if ( ! this.logger_output_filename ) {
-      this.logger_output_filename = generate_default_filename( this.modules.path, null, {
-        logger_output_dir              : this.logger_output_dir,
-        logger_output_filename_prefix  : this.logger_output_filename_prefix,
-        logger_output_filename_postfix : this.logger_output_filename_postfix,
-      });
+
+    if ( ! this?.options?.logger_output_filename ) {
+      this.options.logger_output_filename =
+        generate_default_filename( this.modules.path, null, this.options );
     }
 
     // console.log( '2ObonT+kh51genRM606Azg==', 'this.modules', this.modules );
 
-    const logger_output_dirname = this.modules.path.dirname( this.logger_output_filename );
+    const logger_output_dirname = this.modules.path.dirname( this.options.logger_output_filename );
 
-    // console.log( logger_output_dirname, this.logger_output_filename );
+    // console.log( logger_output_dirname, this.options.logger_output_filename );
 
     await this.modules.fsp.mkdir( logger_output_dirname, { recursive : true, mode:0o777 } );
 
-    const a_write_stream = this.modules.fs.createWriteStream( this.logger_output_filename, {flags:'w' } );
+    const a_write_stream = this.modules.fs.createWriteStream( this.options.logger_output_filename, {flags:'w' } );
     try {
       const c = create_logger_console( a_write_stream, a_write_stream );
       c.dir( log, {
