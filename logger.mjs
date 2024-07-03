@@ -121,8 +121,33 @@ class DummyLogger {
 }
 const DUMMY_LOGGER = new DummyLogger();
 
+const random_token_arr = [
+  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+  'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+];
+const random_token = (length,s)=>{
+  if ( ! length ) {
+    return '';
+  } else if ( typeof s === 'string' ) {
+    if (s.length < length )  {
+      return random_token(
+        length,
+        s + random_token_arr[ String( Math.floor( Math.random() * random_token_arr.length ) ) ]
+      );
+    } else {
+      return s;
+    }
+  } else {
+    return random_token( length, '' );
+  }
+};
 
-const pad = (l,v)=>String(v).padStart(2,'0');
+
+const pad = (l,v)=>{
+  const s = String(v).padStart(l,'0')
+  return s.substring( s.length - l );
+};
 const to_yyyymmdd_hhmmss = (d)=>(
   ''
   + pad( 4, d.getFullYear()     )
@@ -132,6 +157,10 @@ const to_yyyymmdd_hhmmss = (d)=>(
   + pad( 2, d.getHours()        )
   + pad( 2, d.getMinutes()      )
   + pad( 2, d.getSeconds()      )
+  + '-'
+  + pad( 3, d.getMilliseconds() )
+  + '-'
+  + pad( 4, random_token(4)      )
 );
 
 const to_dirname = (d)=>(
@@ -153,38 +182,51 @@ const to_filename = (d)=>(
 );
 
 
-const d = new Date();
-console.log( to_filename( d ) );
-console.log( to_filename( d ) );
+const generate_default_filename = (path, t, options )=>{
+  const {
+    logger_output_dir = './',
+    logger_output_filename_prefix  = '',
+    logger_output_filename_postfix = '',
+  } = options;
+
+  const now = t ?? new Date();
+  const logger_filename =
+    ''
+    + logger_output_filename_prefix
+    + to_filename( now )
+    + logger_output_filename_postfix
+    + '.js';
+  const logger_dirname  = to_dirname ( now );
+  const logger_output_filename = path.join( logger_output_dir, logger_dirname, logger_filename );
+  return logger_output_filename;
+};
 
 
 class FileLogger {
   constructor(options){
-    this.options = options;
-    this.output_dir = options?.logger_output_dir ?? "./";
+    this.options                        = options;
+    this.logger_output_dir              = options?.logger_output_dir      ?? "./";
+    this.logger_output_filename         = options?.logger_output_filename ?? null;
     this.modules =null;
   }
 
   async init_modules_lazily() {
-    const result = await Promise.all([
-      import( "node:path" ),
-      import( "node:fs" ),
-      import( "node:fs/promises" ),
-    ]);
+    if ( ! this.modules ) {
+      const result = await Promise.all([
+        import( "node:path" ),
+        import( "node:fs" ),
+        import( "node:fs/promises" ),
+      ]);
 
-    // console.log( '2ObonT+kh51genRM606Azg==', 'Promise.all', result );
-
-    this.modules = {
-      path : result[0],
-      fs   : result[1],
-      fsp  : result[2],
-    };
+      this.modules = {
+        path : result[0],
+        fs   : result[1],
+        fsp  : result[2],
+      };
+    }
   }
 
   async beginReport(nargs) {
-    if ( ! this.modules ) {
-      await this.init_modules_lazily();
-    }
   }
 
   async endReport(nargs) {
@@ -195,19 +237,24 @@ class FileLogger {
       suppressSuccessfulReport,
     } = nargs;
 
+    await this.init_modules_lazily();
+    if ( ! this.logger_output_filename ) {
+      this.logger_output_filename = generate_default_filename( this.modules.path, null, {
+        logger_output_dir              : this.logger_output_dir,
+        logger_output_filename_prefix  : this.logger_output_filename_prefix,
+        logger_output_filename_postfix : this.logger_output_filename_postfix,
+      });
+    }
+
     // console.log( '2ObonT+kh51genRM606Azg==', 'this.modules', this.modules );
 
-    const now = new Date();
-    const logger_filename = to_filename( now ) + '.json';
-    const logger_dirname =  to_dirname( now );
-    const logger_full_filename = this.modules.path.join( this.output_dir, logger_dirname, logger_filename );
-    const logger_full_dirname = this.modules.path.join( this.output_dir, logger_dirname );
+    const logger_output_dirname = this.modules.path.dirname( this.logger_output_filename );
 
-    // console.log( logger_full_dirname, logger_full_filename );
+    // console.log( logger_output_dirname, this.logger_output_filename );
 
-    await this.modules.fsp.mkdir( logger_full_dirname, { recursive : true, mode:0o777 } );
+    await this.modules.fsp.mkdir( logger_output_dirname, { recursive : true, mode:0o777 } );
 
-    const a_write_stream = this.modules.fs.createWriteStream( logger_full_filename, {flags:'w' } );
+    const a_write_stream = this.modules.fs.createWriteStream( this.logger_output_filename, {flags:'w' } );
     try {
       const c = create_logger_console( a_write_stream, a_write_stream );
       c.dir( log, {
@@ -285,12 +332,16 @@ export class AsyncContextLogger {
     this.reportCount    = 0;
   }
 
-  output( nargs) {
-    this.logList.push({...nargs});
+
+  output( elem ) {
+    if ( ! elem.type ) {
+      elem.type = 'unknown';
+    }
+    this.logList.push( elem );
   }
 
   error(...args) {
-    this.logList.push({
+    this.output({
       type   : MSG_ERROR,
       time   : now(),
       value  : formatArgs(...args),
@@ -298,7 +349,7 @@ export class AsyncContextLogger {
   }
 
   warn(...args) {
-    this.logList.push({
+    this.output({
       type   : MSG_WARNING,
       time   : now(),
       value  : formatArgs(...args),
@@ -306,7 +357,7 @@ export class AsyncContextLogger {
   }
 
   log(...args) {
-    this.logList.push({
+    this.output({
       type   : MSG_LOG,
       time   : now(),
       value  : formatArgs(...args),
@@ -314,7 +365,7 @@ export class AsyncContextLogger {
   }
 
   trace(...args) {
-    this.logList.push({
+    this.output({
       type   : MSG_TRACE_TRACE,
       time   : now(),
       value  : formatArgs(...args),
