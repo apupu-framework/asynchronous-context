@@ -262,8 +262,9 @@ class AsyncContext {
       await this.initializeContext();
     } catch (e) {
       // this will actually never happen.
-      console.error( 'internal error(1)', e );
+      console.error( '[asynchronous-context]', 'internal error(1)', e );
     }
+
     try {
       const result = await fn.call( this, ... args );
 
@@ -271,15 +272,16 @@ class AsyncContext {
         await this.finalizeContext(true);
       } catch (e) {
         // this will actually never happen.
-        console.error( 'internal error(2)', e );
+        console.error( 'asynchronous-context', 'internal error(2)', e );
       }
       return result;
+
     } catch (e) {
       try {
         await this.finalizeContext(false);
       } catch (e) {
         // this will actually never happen.
-        console.error( 'internal error(3)', e );
+        console.error( '[asynchronous-context]', 'internal error(3)', e );
       }
       throw e;
     }
@@ -289,6 +291,14 @@ class AsyncContext {
    *
    */
   async initializeContext() {
+    const is_tron = this.logger.is_tron();
+
+    if ( this.getOptions().debug_initialization === true ) {
+      this.logger.tron();
+    } else {
+      this.logger.troff();
+    }
+
     for ( const i of this.contextInitializers ) {
       try {
         await i.call(this);
@@ -297,12 +307,24 @@ class AsyncContext {
         this.logger.error( 'initializeContext error', e );
       }
     }
+
+    if ( is_tron ) {
+      this.logger.tron();
+    }
   }
 
   /**
    *
    */
   async finalizeContext(is_successful) {
+    const is_tron = this.logger.is_tron();
+
+    if ( this.getOptions().debug_finalization === true ) {
+      this.logger.tron();
+    } else {
+      this.logger.troff();
+    }
+
     for ( const i of this.contextFinalizers ) {
       try {
         await i.call(this,is_successful);
@@ -310,6 +332,10 @@ class AsyncContext {
         console.error('finalizeContext error',e);
         this.logger.error('finalizeContext error',e);
       }
+    }
+
+    if ( is_tron ) {
+      this.logger.tron();
     }
   }
 }

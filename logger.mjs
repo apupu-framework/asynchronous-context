@@ -333,12 +333,28 @@ export class AsyncContextLogger {
     this.reportCount    = 0;
   }
 
+  #__is_tron = true;
+  tron() {
+    this.#__is_tron = true;
+  }
+
+  troff() {
+    this.#__is_tron = false;
+  }
+
+  is_tron() {
+    return this.#__is_tron;
+  }
 
   output( elem ) {
-    if ( ! elem.type ) {
-      elem.type = 'unknown';
+    if ( this.#__is_tron ) {
+      if ( ! elem.type ) {
+        elem.type = 'unknown';
+      }
+      this.logList.push( elem );
+    } else {
+      return;
     }
-    this.logList.push( elem );
   }
 
   error(...args) {
