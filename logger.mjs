@@ -181,6 +181,14 @@ const to_filename = (d)=>(
   + to_yyyymmdd_hhmmss( d )
 );
 
+const append_separator = (prefix, s,postfix)=>{
+  if ( s ) {
+    return `${prefix}${s}${postfix}`;
+  } else {
+    return s;
+  }
+};
+
 
 const generate_default_filename = (path, t, options )=>{
   const {
@@ -192,9 +200,9 @@ const generate_default_filename = (path, t, options )=>{
   const now = t ?? new Date();
   const logger_filename =
     ''
-    + logger_output_filename_prefix
+    + append_separator( '',  logger_output_filename_prefix , '-' )
     + to_filename( now )
-    + logger_output_filename_postfix
+    + append_separator( '-', logger_output_filename_postfix, '' )
     + '.js';
   const logger_dirname  = to_dirname ( now );
   const logger_output_filename = path.join( logger_output_dir, logger_dirname, logger_filename );
