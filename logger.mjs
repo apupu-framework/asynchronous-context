@@ -319,6 +319,29 @@ function formatArgs2( ...args ) {
 const formatArgs = formatArgs2;
 const now = ()=>new Date();
 
+const process_stacktrace = (name, arr)=>{
+  // console.log( arr );
+  const result = (
+    arr
+    .filter( e=>new RegExp( `^\\s+at\\s+` ).exec(e) )
+    .map( e=>e.trim() )
+  );
+  return result;
+  // console.log( result );
+  // while (
+  //      ( 0 < result.length )
+  //   && ( ! result.shift().startsWith( `at ${name} ` ) )
+  // )
+  // {
+  //   console.log( result );
+  //   //
+  // }
+  // return 0 < result.length ? result[0] : "";
+};
+const get_stacktrace = (name)=>{
+  return process_stacktrace( name, new Error().stack.toString().split( '\n' ) );
+};
+
 export class AsyncContextLogger {
   name   = 'AsyncContextLogger';
   options = {};
@@ -415,6 +438,7 @@ export class AsyncContextLogger {
       type   : MSG_TRACE_BEGIN,
       time   : now(),
       name   : name,
+      loca   : get_stacktrace('AsyncContextLogger.enter'),
       args   : ( unprevent(args) ),
     });
 
@@ -427,6 +451,7 @@ export class AsyncContextLogger {
       type   : MSG_TRACE_END,
       time   : now(),
       name   : name,
+      loca   : get_stacktrace('AsyncContextLogger.leave'),
       status : 'succeeded',
       result : ( unprevent( result )),
     });
