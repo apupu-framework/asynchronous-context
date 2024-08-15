@@ -1,7 +1,14 @@
 
 import { ENV_SETTINGS, readSettings } from './settings.mjs';
 
+let __DONE__dotenvFromSettings = false;
+
 export const env = (settings)=>{
+  if ( __DONE__dotenvFromSettings ) {
+    return;
+  }
+  __DONE__dotenvFromSettings = true;
+
   console.log( 'asynchronous-context/env is activated' );
   const inenv = settings?.env ?? null;
   const outenv = process.env;
