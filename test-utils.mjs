@@ -72,7 +72,7 @@ export function createTest( originalTest, createContext, options ) {
     } = options;
 
 
-    args[last] = delegatorFactory(
+    args[last] =
       async (...args2 )=>{
         try {
           return await (
@@ -84,8 +84,8 @@ export function createTest( originalTest, createContext, options ) {
           throw e;
         }
       }
-    );
-    delegatorFactory( originalTest ) ( ...args );
+
+    return delegatorFactory( originalTest ) ( ...args );
   }
   return testex;
 }
