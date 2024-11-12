@@ -4,6 +4,9 @@
   "description": "Define the base class for objects to be created with a framework `Kombucha.js`",
   "type": "module",
   "main": "./context.mjs",
+  "bin" : {
+    "async_env" : "./env.mjs"
+  },
   "exports" : {
     "." :                 "./context.mjs",
     "./context" :         "./context.mjs",
