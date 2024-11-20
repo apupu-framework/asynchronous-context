@@ -102,7 +102,7 @@ executedAsAMainScript().then( e=>{
     }
   } else {
     // console.error( 'env.mjs is loaded as a module.',e );
-    showAbout()
+    // showAbout()
   }
 });
 
