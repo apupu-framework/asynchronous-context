@@ -10,7 +10,7 @@ export const env = (settings)=>{
   }
   __DONE__dotenvFromSettings = true;
 
-  console.log( 'asynchronous-context/env is activated' );
+  console.error( 'asynchronous-context/env is activated' );
   const inenv = settings?.env ?? null;
   const outenv = process.env;
 

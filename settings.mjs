@@ -37,7 +37,7 @@ export const filenameOfSettings = (...args)=>{
   if ( args.length !== 0 ) {
     if ( typeof args[0] === 'string' ) {
       __filenameOfSettings = args[0];
-      console.log( `the main file of 'asynchronous-context/settings' is set to ${__filenameOfSettings}` );
+      console.error( `the main file of 'asynchronous-context/settings' is set to ${__filenameOfSettings}` );
 
       // Reflect to `proces.env` // (Tue, 10 Oct 2023 13:40:59 +0900)
       process.env[ENV_SETTINGS] = args[0]
@@ -59,15 +59,15 @@ export const filenameOfSettings = (...args)=>{
 const DEBUG = false;
 function loggingBeforeRead() {
   if ( DEBUG ) {
-    console.log( '[asynchronous-context] reading setting file' );
-    console.log( '                path : ', filenameOfSettings() );
-    console.log( '               ', new Error().stack.split('\n')[3].trim() );
+    console.error( '[asynchronous-context] reading setting file' );
+    console.error( '                path : ', filenameOfSettings() );
+    console.error( '               ', new Error().stack.split('\n')[3].trim() );
   }
 }
 function loggingAfterRead(json) {
   if ( DEBUG ) {
-    // console.log( '[asynchronous-context] setting-file.json ',  util.inspect( json ,{colors:true}) );
-    console.log( '[asynchronous-context] setting-file.json ',  json );
+    // console.error( '[asynchronous-context] setting-file.json ',  util.inspect( json ,{colors:true}) );
+    console.error( '[asynchronous-context] setting-file.json ',  json );
   }
   return json;
 }
@@ -122,7 +122,7 @@ export const ENV_SETTINGS = 'SETTINGS';
 const reflectEnvToSettings = ()=>{
   if ( ENV_SETTINGS in process.env ) {
     const filename = process.env.SETTINGS;
-    console.log( `a customized settings file is specified '${ filename }'` );
+    console.error( `a customized settings file is specified '${ filename }'` );
     __filenameOfSettings = filename;
   }
 };
